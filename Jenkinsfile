@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        docker { image 'python:3' }
+        docker {
+            image 'python:3'
+            args '-u root' // Ensure we can install packages as root
+        }
     }
     environment {
         DJANGO_SETTINGS_MODULE = 'car_project.settings'
@@ -13,7 +16,8 @@ pipeline {
         }
         stage('Install dependencies') {
             steps {
-                sh 'pip --version'
+                sh 'pip --version' // Verify pip is available
+                sh 'pip install --upgrade pip' // Ensure pip is up to date
                 sh 'pip install -r requirements.txt'
             }
         }
