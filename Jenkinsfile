@@ -1,7 +1,8 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'python:3' }
+    }
     environment {
-        PYTHON_HOME = tool name: 'Python3.9', type: 'hudson.plugins.python.PythonInstallation'
         DJANGO_SETTINGS_MODULE = 'car_project.settings'
     }
     stages {
@@ -12,28 +13,29 @@ pipeline {
         }
         stage('Install dependencies') {
             steps {
-                sh "${PYTHON_HOME}/bin/pip install -r requirements.txt"
+                sh 'pip --version'
+                sh 'pip install -r requirements.txt'
             }
         }
         stage('Run tests') {
             steps {
-                sh "${PYTHON_HOME}/bin/python manage.py test"
+                sh 'python manage.py test'
             }
         }
         stage('Static code analysis') {
             steps {
-                sh "${PYTHON_HOME}/bin/flake8 ."
+                sh 'flake8 .'
             }
         }
         stage('Build') {
             steps {
-                sh "${PYTHON_HOME}/bin/python manage.py collectstatic --noinput"
+                sh 'python manage.py collectstatic --noinput'
             }
         }
         stage('Deploy') {
             steps {
-                sh "${PYTHON_HOME}/bin/python manage.py migrate"
-                sh "${PYTHON_HOME}/bin/python manage.py runserver"
+                sh 'python manage.py migrate'
+                sh 'python manage.py runserver'
             }
         }
     }
