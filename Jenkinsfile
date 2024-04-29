@@ -10,7 +10,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build('my-docker-image:latest', '-f path/to/your/Dockerfile .')
+                    docker.build('my-docker-image:latest', '.')
                 }
             }
         }
