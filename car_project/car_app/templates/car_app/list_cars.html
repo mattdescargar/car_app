@@ -1,0 +1,85 @@
+<!-- car_app/templates/car_app/list_cars.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car List</title>
+    <style>
+        #car-list li {
+            display: inline-block;
+            margin-right: 10px; /* Adjust margin as needed */
+            text-align: center; /* Center-align the text */
+        }
+    </style>
+</head>
+
+<body>
+    {% load static %}
+    <h2>Car List</h2>
+
+    <!-- Filter buttons -->
+    <div>
+        <button id="filter-all">All Cars</button>
+        <button id="filter-red">Red Cars</button>
+        <button id="filter-blue">Blue Cars</button>
+    </div>
+
+    <ul id="car-list">
+        {% for car in cars %}
+            <li id="car-{{ car.id }}" data-car-id="{{ car.id }}" data-color="{{ car.color }}" style="width: 300px;">
+                {% if car.color == 'red' %}
+                <img  src="{% static 'car_app/redcar.png' %}" alt="{{ car.name }}" style="width: 300px;">
+                {% elif car.color == 'blue' %}
+                <img src="{% static 'car_app/bluecar.png' %}" alt="{{ car.name }}" style="width: 300px;">
+                {% else %}
+                    <!-- Handle other colors or no specific image for other colors -->
+                {% endif %}
+                {{ car.name }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Include jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- Your script for sortable and filter -->
+    <script>
+        $(document).ready(function () {
+            $("#car-list").sortable({
+                axis: "xy", // Allow sorting only along the x-axis (horizontal)
+                update: function (event, ui) {
+                    var newPositions = $(this).sortable('toArray', { attribute: 'data-car-id' });
+
+                    // Send the new positions to the server
+                    $.ajax({
+                        type: "POST",
+                        url: "/update_positions/",
+                        data: { positions: newPositions },
+                        success: function (data) {
+                            console.log("Positions updated successfully");
+                        },
+                        error: function (error) {
+                            console.log("Error updating positions");
+                        }
+                    });
+                }
+            });
+
+            // Filter functionality
+            $("#filter-all").click(function () {
+                $("#car-list li").show();
+            });
+
+            $("#filter-red").click(function () {
+                $("#car-list li").hide();
+                $("#car-list li[data-color='red']").show();
+            });
+
+            $("#filter-blue").click(function () {
+                $("#car-list li").hide();
+                $("#car-list li[data-color='blue']").show();
+            });
+        });
+    </script>
+</body>
+</html>
