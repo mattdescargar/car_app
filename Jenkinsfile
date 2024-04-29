@@ -27,9 +27,6 @@ pipeline {
         // Add other stages as needed
     }
     post {
-        always {
-            // Your post-build actions
-        }
         success {
             echo 'Build successful! Deploying...'
         }
