@@ -8,23 +8,23 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-            agent {
-                docker { image 'python:3' }
-            }
+            agent any
             steps {
-                script {
-                    docker.build('my-docker-image:latest', '.')
+                container('python:3') {
+                    script {
+                        docker.build('my-docker-image:latest', '.')
+                    }
                 }
             }
         }
         stage('Install dependencies') {
-            agent {
-                docker { image 'my-docker-image:latest' }
-            }
+            agent any
             steps {
-                script {
-                    sh 'pip --version'
-                    sh 'pip install -r requirements.txt'
+                container('my-docker-image:latest') {
+                    script {
+                        sh 'pip --version'
+                        sh 'pip install -r requirements.txt'
+                    }
                 }
             }
         }
