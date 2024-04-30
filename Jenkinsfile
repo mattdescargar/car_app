@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'python:3.12.2' }
-    }
+    agent any
     environment {
         DJANGO_SETTINGS_MODULE = 'car_project.settings'
     }
@@ -13,7 +11,6 @@ pipeline {
         }
         stage('Install dependencies') {
             steps {
-                sh 'pip --version'
                 sh 'pip install -r requirements.txt'
             }
         }
@@ -52,3 +49,4 @@ pipeline {
         }
     }
 }
+
