@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker { image 'python:3' }
+        docker { image 'python:3.12.2' }
     }
     environment {
         DJANGO_SETTINGS_MODULE = 'car_project.settings'
